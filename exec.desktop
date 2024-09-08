@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Varsovia Software Install
+Exec=varsovia-software-install %u
+#Icon=application-x-executable
+Icon=system-software-install
+Terminal=false
+StartupNotify=true
+Type=Application
+MimeType=x-content/unix-software;

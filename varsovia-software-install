@@ -1,0 +1,100 @@
+#!/bin/bash
+if [ "$1" == "" ]; then
+	zenity --info --text "Varsovia software install vr. 1.0" --title "Varsovia software install"
+fi
+path=$1
+name=`basename $1`
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+function recognize-software
+{
+	echo "Recognizing - $path"
+	type=0
+	if [[ "$path" == *".rpm"* ]]; then
+		type="rpm"
+	fi
+	if [[ "$path" == *".flatpakref"* ]]; then
+		type="flatpak"
+	fi
+	if [[ "$path" == *".deb"* ]]; then
+		type="deb"
+	fi
+	if [[ "$path" == *".apk"* ]]; then
+		type="apk"
+	fi
+	if [[ "$path" == *".sh"* ]]; then
+		type="sh"
+	fi
+	if [[ "$path" == *".AppImage"* ]]; then
+		type="appimage"
+	fi
+	if [[ "$path" == *".py"* ]]; then
+		type="python"
+	fi
+	if [[ "$path" == *".jar"* ]]; then
+		type="javajar"
+	fi
+	if [[ "$path" == *".exe"* ]]; then
+		type="exe"
+	fi
+	if [ "$type" == "0" ]; then
+		if zenity --question --text "File is not supported yet" --title "Varsovia Software Install" --ok-label "search app via xdg open" --cancel-label "exit"
+		then
+			pkexec sudo chmod +x $path
+			xdg-open $path
+		else
+			exit
+		fi
+	fi
+}
+function install-rpm {
+	pkexec sudo dnf localinstall -y $path | zenity --progress --text="Installing $nameid via dnf..." --auto-kill --title="Varsovia Software Install" --pulsate --auto-close
+	notify-send "Application $name is installed"
+	echo ""
+	echo ""
+	read -p "Click any key to exit" skip
+}
+function install-flatpak {
+	nameid=${name::-11}
+	flatpak install -y $path | zenity --progress --text="Installing $nameid via flatpak..." --auto-kill --title="Varsovia Software Install" --pulsate --auto-close
+	notify-send "Application $nameid is installed"
+	rm $path
+	if `zenity --question --text "Do you want to run $nameid?" --title "Varsovia Software Install"`
+	then
+		flatpak run $nameid
+	fi
+	echo ""
+	echo ""
+	read -p "Click any key to exit" skip
+}
+function install-deb {
+	sudo dpkg -i $path 
+}
+function install-sh {
+	pkexec sudo chmod +x $path
+	pkexec sudo sh $path
+}
+function install-appimage {
+	chmod +x $path
+	./$name
+}
+function install-python {
+	sudo python $path
+}
+function install-apk {
+	waydroid app install $path
+}
+function install-javajar {
+	java -jar $path
+}
+function install-exe {
+flatpak run com.usebottles.bottles $path
+}
+#code starts here
+recognize-software
+if zenity --question --text "Do you want to install $name?" --title "Varsovia Software Install"
+then
+	echo "Starting Instalation..."
+	install-$type
+else
+	exit
+fi
