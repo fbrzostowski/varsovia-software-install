@@ -6,5 +6,6 @@ This program will help you with installing apps. Basicly click on program open a
 1. Download the code
 2. Unzip
 3. copy the file "setup.sh"
-4. open terminal and run command: sudo bash {paste the path to setup.sh}
-5. Click Next button a few times in GUI ;)
+4. open terminal
+5. run command: sudo bash {paste the path to setup.sh}
+6. Click Next button a few times in GUI ;)
