@@ -92,7 +92,7 @@ while [ "a" == "a" ]; do
 		break
 	fi
 done | yad --title="Varsovia Software Install setup" --image=system-software-install --text='<span foreground="white" font="" font-size="xx-large">Varsovia Software Install</span>' --width=800 --height=600 --progress \
-  --enable-log="Test Log" \
+  --enable-log="Installation Log" \
   --no-buttons \
   --auto-kill &
 function comment-intallation {
